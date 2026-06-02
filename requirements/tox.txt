@@ -109,6 +109,9 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
+setuptools
+    # via -r requirements/base.in
+    # (enmerkar 0.7.1 uses pkg_resources at runtime; not bundled in Python 3.12)
 sqlparse==0.5.3
     # via django
 urllib3==2.5.0
