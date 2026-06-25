@@ -8,7 +8,7 @@ else:  # django < 2.1
     from django.template.base import TOKEN_TEXT
 
 from django.utils.encoding import force_str
-from .vendor.enmerkar_extract import extract_django
+from .vendor.enmerkar.enmerkar_extract import extract_django
 
 from .vendor.markey import underscore
 from .vendor.markey.machine import parse_arguments, tokenize
