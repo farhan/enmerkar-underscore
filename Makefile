@@ -3,14 +3,11 @@
 help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
-	@echo "lint - check style with flake8"
+	@echo "quality - check style with flake8"
 	@echo "test - run tests quickly with the default Python"
 	@echo "test-all - run tests on every Python version with tox"
-	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
-	@echo "release - package and upload a release"
-	@echo "dist - package"
-	@echo "upgrade update the pip requirements files to use the latest releases satisfying our constraints"
+	@echo "upgrade - update the pip requirements files to use the latest releases satisfying our constraints"
 
 clean: clean-build clean-pyc
 	rm -fr htmlcov/
@@ -25,47 +22,22 @@ clean-pyc:
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
 
-lint:
-	flake8 django-babel-underscore tests
+quality:
+	uv run tox -e quality
 
 test:
-	py.test tests/
+	uv run tox -e py312-django52
 
 test-all:
-	tox
-
-coverage:
-	coverage run --source django-babel-underscore setup.py test
-	coverage report -m
-	coverage html
-	open htmlcov/index.html
+	uv run tox
 
 docs:
-	rm -f docs/django-babel-underscore.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ django-babel-underscore
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	open docs/_build/html/index.html
+	uv run tox -e docs
 
-release: clean
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
+requirements:
+	uv sync --group dev
+	uv tool install tox --with tox-uv
 
-dist: clean
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-upgrade: export CUSTOM_COMPILE_COMMAND=make upgrade
 upgrade:
-	pip install -qr requirements/pip-tools.txt
-	pip-compile --upgrade --allow-unsafe --rebuild -o requirements/pip.txt requirements/pip.in
-	pip-compile --upgrade -o requirements/pip-tools.txt requirements/pip-tools.in
-	pip install -qr requirements/pip.txt
-	pip install -qr requirements/pip-tools.txt
-	pip-compile --upgrade -o requirements/base.txt requirements/base.in
-	pip-compile --upgrade -o requirements/test.txt requirements/test.in
-	pip-compile --upgrade -o requirements/dev.txt requirements/dev.in
-	# Let tox control the Django version for tests
-	sed '/^[dD]jango==/d' requirements/test.txt > requirements/tox.txt
+	uv run --with edx-lint edx_lint write_uv_constraints pyproject.toml
+	uv lock --upgrade

@@ -1,0 +1,10 @@
+[flake8]
+ignore = E128
+max-line-length = 96
+exclude =
+    .tox,
+    .git,
+    docs,
+    docs/conf.py,
+    src/enmerkar_underscore/vendor,
+    *.egg*

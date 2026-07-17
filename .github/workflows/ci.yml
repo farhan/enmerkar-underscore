@@ -4,34 +4,39 @@ on:
   push:
     branches: [master]
   pull_request:
-    branches:
-    - '**'
+  # Allow this workflow to be called from other workflows
+  workflow_call:
 
 
 jobs:
   run_tests:
-    name: tests
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.toxenv }}
+    runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: ['3.11', '3.12']
-        toxenv: ['django42', 'django52']
+        python-version: ["3.12"]
+        toxenv: [quality, docs, py312-django42, py312-django52]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: setup python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-    - name: Install pip
-      run: pip install -r requirements/pip.txt
+      - name: Install uv
+        uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          enable-cache: true
+          python-version: "${{ matrix.python-version }}"
 
-    - name: Install tox
-      run: pip install tox
+      - name: Install CI dependencies
+        run: uv sync --group ci
 
-    - name: Run Tests
-      env:
-        TOXENV: ${{ matrix.toxenv }}
-      run: tox
+      - name: Run tox
+        run: uv run tox -e ${{ matrix.toxenv }}
+
+      - name: Upload coverage to Codecov
+        if: matrix.toxenv == 'py312-django42'
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6.0.2
+        with:
+          flags: unittests
+          fail_ci_if_error: true
