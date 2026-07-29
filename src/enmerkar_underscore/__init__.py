@@ -8,13 +8,13 @@ else:  # django < 2.1
     from django.template.base import TOKEN_TEXT
 
 from django.utils.encoding import force_str
-from enmerkar.extract import extract_django
+from .vendor.enmerkar.enmerkar_extract import extract_django
 
 from .vendor.markey import underscore
 from .vendor.markey.machine import parse_arguments, tokenize
 from .vendor.markey.tools import TokenStream
 
-__version__ = '2.4.0'
+__version__ = '2.4.1'
 
 def extract(fileobj, keywords, comment_tags, options):
     """Extracts translation messages from underscore template files.
