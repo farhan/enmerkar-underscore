@@ -1,4 +1,4 @@
-.PHONY: clean-pyc clean-build docs clean upgrade requirements lint test test-all coverage release dist
+.PHONY: clean-pyc clean-build docs clean upgrade requirements lint test test-all coverage dist
 
 help:
 	@echo "clean-build - remove build artifacts"
@@ -9,7 +9,6 @@ help:
 	@echo "test-all - run tests on every Python version with tox"
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
-	@echo "release - package and upload a release"
 	@echo "dist - package"
 	@echo "upgrade update the python requirements files to use the latest releases satisfying our constraints"
 
@@ -47,9 +46,6 @@ coverage:
 docs:
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-
-release: clean dist
-	twine upload dist/*
 
 dist: clean
 	python -m build
