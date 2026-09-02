@@ -44,8 +44,8 @@ coverage:
 	open htmlcov/index.html
 
 docs:
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
+	$(MAKE) -e -C docs clean
+	$(MAKE) -e -C docs html
 
 dist: clean
 	python -m build
