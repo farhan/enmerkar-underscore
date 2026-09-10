@@ -29,26 +29,26 @@ requirements: ## install development environment requirements
 	uv sync --group dev
 
 lint:
-	flake8 src tests
+	uv run --group test flake8 src tests
 
 test:
-	python -Wd -m pytest tests/
+	uv run --group test python -Wd -m pytest tests/
 
 test-all:
 	tox
 
 coverage:
-	coverage run --source src/enmerkar_underscore -m pytest tests/
-	coverage report -m
-	coverage html
+	uv run --group test coverage run --source src/enmerkar_underscore -m pytest tests/
+	uv run --group test coverage report -m
+	uv run --group test coverage html
 	open htmlcov/index.html
 
 docs:
 	$(MAKE) -e -C docs clean
-	$(MAKE) -e -C docs html
+	uv run --group doc $(MAKE) -e -C docs html
 
 dist: clean
-	python -m build
+	uv build
 	ls -l dist
 
 upgrade: ## update python dependencies
