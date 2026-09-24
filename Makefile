@@ -29,10 +29,10 @@ requirements: ## install development environment requirements
 	uv sync --group dev
 
 lint:
-	flake8 src tests
+	uv run flake8 src tests
 
 test:
-	python -Wd -m pytest tests/
+	uv run python -Wd -m pytest tests/
 
 test-all:
 	tox
